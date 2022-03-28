@@ -12,13 +12,20 @@ const publicDirectoryPath = path.join(__dirname, "../public");
 
 app.use(express.static(publicDirectoryPath));
 
+// builtin event
 io.on("connection", (socket) => {
   console.log("New socket connected");
 
   socket.emit("message", "Welcome!");
+  socket.broadcast.emit("message", "A new user has joined!");
 
   socket.on("sendMessage", (message) => {
     io.emit("message", message);
+  });
+
+  // builtin event
+  socket.on("disconnect", () => {
+    io.emit("message", "A user has left!");
   });
 });
 
